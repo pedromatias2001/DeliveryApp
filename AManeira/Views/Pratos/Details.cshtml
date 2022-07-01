@@ -1,0 +1,106 @@
+﻿@model AManeira.Models.Pratos
+
+@{
+    ViewData["Title"] = "Detalhes";
+}
+
+<h1>@Html.DisplayFor(model => model.Nome)</h1>
+
+<div>
+    <h4>Detalhes</h4>
+    <hr />
+    <!--<dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Nome)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Nome)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Preco)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Preco)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Foto)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Foto)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Descricao)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Descricao)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.NumStock)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.NumStock)
+        </dd>
+    </dl>-->
+       
+</div>
+
+    @foreach (var item in Model.ListaFotos ) {
+        <img src="~/imagens/@item.Name"
+        title="@Html.DisplayFor(model => model.Nome)" height="150"/>
+
+}
+<div style="text-align:center">
+    <!--
+        //slider das fotos associadas ao prato
+    -->
+    <br />
+   <img src="~/imagens/@Html.DisplayFor(model => model.Foto)"
+        alt="Fotografia do prato @Html.DisplayFor(model => model.Nome)"
+        title="@Html.DisplayFor(model => model.Nome)" height="300"/>
+    <div>
+        @Html.DisplayFor(model => model.Descricao)
+    </div>
+    <br />
+    @if (User.Identity.IsAuthenticated)
+    {
+            <input type="button" class="botao" id="addDish" onclick="AjaxFormSubmit(@Model?.Id)" value="Adicionar à encomenda (+@Html.DisplayFor(model => model.Preco)$)"/>
+    }
+    <br />
+    Stock do produto: @Html.DisplayFor(model => model.NumStock)
+</div>
+<div>
+    @if(User.IsInRole("Admin")){
+        <div>
+        <a asp-action="Edit" asp-route-id="@Model?.Id">Editar prato</a> |
+        </div>
+    }
+    <a asp-action="Index">Ver Pratos</a>
+</div>
+
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript" src="https://ajax.cdnjs.com/ajax/libs/json2/20110223/json2.js"></script>
+    <script type="text/javascript">
+        function AjaxFormSubmit(i) {
+        var pratoID = i;
+        $.ajax({
+            async: true,
+            type: "POST",
+            url: "/Pratos/AddToEncomenda",
+            data: { idAux: pratoID},
+            //contentType: 'application/json',
+            //dataType: "json",
+            success: function (response) {
+                if (response == true) {
+                    // incrementa o nº de itens no carrinho de compras
+                    // ...
+                    // mostra msg de sucesso
+                    alert("Prato adicionado!");
+                }
+                if (response == null) {
+                    alert("Erro ao adicionar prato :/");
+                }
+            }
+        });
+    }
+</script>

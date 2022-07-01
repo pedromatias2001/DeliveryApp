@@ -1,0 +1,66 @@
+﻿@model IEnumerable<AManeira.Models.Pratos>
+
+@{
+    ViewData["Title"] = "Ementa";
+}
+
+<h1>Ementa da semana</h1>
+@if (User.IsInRole("Admin"))
+{
+    <p>
+        <a asp-action="Create">Adicionar prato</a>
+    </p>
+}
+@foreach (var item in Model)
+{
+    <div class="pratos">
+        <a asp-action="Details" asp-controller="Pratos" asp-route-id="@item.Id" target="_self">
+            <img src="~/imagens/@item.Foto"
+             alt="Fotografia do prato @Html.DisplayFor(modelItem => item.Nome)"
+             title="@item.Nome"
+             height="150" />
+        </a>
+        <div>@Html.DisplayFor(modelItem => item.Nome)</div>
+        @if (!User.IsInRole("Cliente"))
+        {
+            <div>@Html.DisplayFor(modelItem => item.Preco)$</div>
+        }
+        @if (User.IsInRole("Cliente"))
+        {
+            <input type="button" class="botao" id="addDish" onclick="AjaxFormSubmit(@item.Id)" value="Adicionar à encomenda (+@Html.DisplayFor(modelItem => item.Preco)$)" />
+        }
+    </div>
+
+}
+
+@if(!User.Identity.IsAuthenticated){
+    <p>Por favor inicie sessão ou crie uma conta para poder fazer uma encomenda.</p>
+}
+
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script type="text/javascript" src="https://ajax.cdnjs.com/ajax/libs/json2/20110223/json2.js"></script>
+<script type="text/javascript">
+    function AjaxFormSubmit(i) {
+        var pratoID = i;
+        $.ajax({
+            async: true,
+            type: "POST",
+            url: "/Pratos/AddToEncomenda",
+            data: { idAux: pratoID},
+            //contentType: 'application/json',
+            //dataType: "json",
+            success: function (response) {
+                if (response = 1) {
+                    // incrementa o nº de itens no carrinho de compras
+                    // ...
+                    // mostra msg de sucesso
+                    alert("Prato adicionado!");
+                }
+                if (response = 0) {
+                    alert("Erro ao adicionar prato :/");
+                }
+            }
+        });
+    }
+</script>

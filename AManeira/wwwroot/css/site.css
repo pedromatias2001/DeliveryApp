@@ -1,0 +1,37 @@
+html {
+  font-size: 14px;
+}
+
+a{
+    color: darkblue;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px;
+    background-image: url(../imagens/fundo.png);
+    background-size:cover;
+}
+.pratos{
+    display:inline-block;
+    width:33%;
+    text-align:center;
+    background-color: rgb(237, 135, 37, 0,80);
+}
+.botao{
+    color:white;
+    background-color:darkorange;
+}
+$('.carousel').carousel({
+  interval: 2000
+})
