@@ -18,7 +18,11 @@ namespace AManeira.Models
         /// <summary>
         /// preço total da encomenda
         /// </summary>
+        [NotMapped]  // this anotation tells the EF that this attribute must not be represented on database
+        [RegularExpression("[0-9]{1,8}[,.]?[0-9]{0,2}", ErrorMessage = "Formato não aceitável")]
         [Display (Name= "Preço Total")]
+        public string AuxPrecoTotal { get; set; }
+
         public decimal PrecoTotal { get; set; }
 
         /// <summary>

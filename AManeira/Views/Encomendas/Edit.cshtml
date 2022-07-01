@@ -1,12 +1,12 @@
 ﻿@model AManeira.Models.Encomendas
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Checkout";
 }
 
-<h1>Edit</h1>
+<h1>Checkout</h1>
 
-<h4>Encomendas</h4>
+<h4>Escolha a data da encomenda</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -14,16 +14,16 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
-                <label asp-for="PrecoTotal" class="control-label"></label>
-                <input asp-for="PrecoTotal" class="form-control" />
-                <span asp-validation-for="PrecoTotal" class="text-danger"></span>
+                <label asp-for="AuxPrecoTotal" class="control-label"></label>
+                <input readonly asp-for="AuxPrecoTotal" class="form-control" />
+                <span asp-validation-for="AuxPrecoTotal" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="DataHoraEntrega" class="control-label"></label>
                 <input asp-for="DataHoraEntrega" class="form-control" />
                 <span asp-validation-for="DataHoraEntrega" class="text-danger"></span>
             </div>
-            <div class="form-group form-check">
+            @*<div class="form-group form-check">
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="IsActive" /> @Html.DisplayNameFor(model => model.IsActive)
                 </label>
@@ -33,15 +33,48 @@
                 <select asp-for="ClienteFK" class="form-control" asp-items="ViewBag.ClienteFK"></select>
                 <span asp-validation-for="ClienteFK" class="text-danger"></span>
             </div>
+            *@
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Pagar" class="btn btn-primary" />
             </div>
         </form>
     </div>
-</div>
+    <table class="table">
+    <thead>
+        <tr>
+            <th>
+                Prato
+            </th>
+            <th>
+                Quantidade
+            </th>
+            <th>
+                Preço Unitário
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var item in Model.ListaEncomendasPratos)
+        {
+            <tr>
+                <td>
+                    <img src="~/imagens/@item.Prato.Foto" width="100"/>
+                    <br />
+                    @Html.DisplayFor(modelItem => item.Prato.Nome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quantidade)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Prato.Preco)€
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-controller="Pratos" asp-action="Index">Voltar à ementa</a>
 </div>
 
 @section Scripts {

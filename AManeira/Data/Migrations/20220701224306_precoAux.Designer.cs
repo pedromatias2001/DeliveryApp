@@ -4,6 +4,7 @@ using AManeira.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AManeira.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220701224306_precoAux")]
+    partial class precoAux
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -102,15 +104,12 @@ namespace AManeira.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Contacto")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Morada")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Nome")
-                        .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
@@ -261,15 +260,12 @@ namespace AManeira.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Descricao")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Foto")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Nome")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("NumStock")
@@ -342,14 +338,14 @@ namespace AManeira.Data.Migrations
                         new
                         {
                             Id = "a",
-                            ConcurrencyStamp = "28441763-247d-4817-8d9c-7280d3d57497",
+                            ConcurrencyStamp = "91b2bbef-c5c9-4685-a29b-e968e9d2a2ca",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "c",
-                            ConcurrencyStamp = "7216dba4-9264-4dfa-9455-6e907dd741dc",
+                            ConcurrencyStamp = "a3c1df58-ccdc-42ed-a9e0-295c16571cc4",
                             Name = "Cliente",
                             NormalizedName = "CLIENTE"
                         });

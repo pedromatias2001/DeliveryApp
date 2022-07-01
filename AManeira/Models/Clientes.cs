@@ -18,23 +18,27 @@ namespace AManeira.Models
         /// nome do cliente
         /// </summary>
         [StringLength(30, ErrorMessage = "{0} não pode ter mais que {1} caracteres")]
-        [RegularExpression("[A-ZÓÂÍa-zãáéçõàóíâôê ]+")]
+        [RegularExpression("[A-ZÓÂÍa-zãáéçõàóíâôê ]+", ErrorMessage = "Caracteres não aceitáveis")]
+        [Required]
         public string Nome { get; set; }
 
         /// <summary>
         /// morada para entrega da encomenda
         /// </summary>
+        [Required]
         public string Morada { get; set; }
 
         /// <summary>
         /// código postal do cliente
         /// </summary>
+        [RegularExpression("[0-9]{4}-[0-9]{3}", ErrorMessage = "Formato não aceitável")]
         public string CodPostal { get; set; }
 
 
         /// <summary>
         /// nº telemovel do cliente
         /// </summary>
+        [Required]
         [RegularExpression("[9][0-9]{8}", ErrorMessage ="Número inválido")]
         public string Contacto { get; set; }
 

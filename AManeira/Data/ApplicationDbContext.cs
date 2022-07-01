@@ -68,5 +68,6 @@ namespace AManeira.Data
         public DbSet<AManeira.Models.Encomendas> Encomendas { get; set; }
         public DbSet<AManeira.Models.Fotos> Fotos { get; set; }
         public DbSet<AManeira.Models.Clientes> Clientes { get; set; }
+        public DbSet<AManeira.Models.EncomendasPratos> EncomendasPratos { get; set; }
     }
 }

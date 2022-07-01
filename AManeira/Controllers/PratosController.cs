@@ -71,15 +71,16 @@ namespace AManeira.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome,Preco,Foto,Descricao,NumStock")] Pratos pratos)
+        public async Task<IActionResult> Create([Bind("Id,Nome,Preco,AuxPreco,Foto,Descricao,NumStock")] Pratos prato)
         {
+            prato.Preco = Convert.ToDecimal(prato.AuxPreco.Replace('.', ','));
             if (ModelState.IsValid)
             {
-                _context.Add(pratos);
+                _context.Add(prato);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(pratos);
+            return View(prato);
         }
 
         // GET: Pratos/Edit/5
@@ -104,9 +105,10 @@ namespace AManeira.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Preco,Foto,Descricao,NumStock")] Pratos pratos)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Preco,AuxPreco,Foto,Descricao,NumStock")] Pratos prato)
         {
-            if (id != pratos.Id)
+            prato.Preco = Convert.ToDecimal(prato.AuxPreco.Replace('.', ','));
+            if (id != prato.Id)
             {
                 return RedirectToAction("Index");
             }
@@ -115,12 +117,12 @@ namespace AManeira.Controllers
             {
                 try
                 {
-                    _context.Update(pratos);
+                    _context.Update(prato);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PratosExists(pratos.Id))
+                    if (!PratosExists(prato.Id))
                     {
                         return RedirectToAction("Index");
                     }
@@ -131,7 +133,7 @@ namespace AManeira.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(pratos);
+            return View(prato);
         }
 
         // GET: Pratos/Delete/5
@@ -197,12 +199,13 @@ namespace AManeira.Controllers
 
             // verificar em que encomenda por o prato
             var encomenda = await _context.Encomendas
+               .Include(s=> s.ListaEncomendasPratos)
                .Where(s => s.ClienteFK == cliente.ID && s.IsActive == true)
                .FirstOrDefaultAsync();
             //criar encomenda se não existe encomenda ativa relacionada ao cliente
             if (encomenda == null)
             {
-                encomenda = new Encomendas { PrecoTotal = 0, ClienteFK = cliente.ID, IsActive = true };
+                encomenda = new Encomendas { PrecoTotal = 0, ClienteFK = cliente.ID, DataHoraEntrega=DateTime.Now, IsActive = true };
                 // associar o Prato à Encomenda
                 var listaPrato = new List<EncomendasPratos>();
                 listaPrato.Add(new EncomendasPratos { Prato = prato, Encomenda = encomenda, Quantidade = 1 });
@@ -217,36 +220,35 @@ namespace AManeira.Controllers
             /* se chego aqui, a Encomenda já existia...
              */
 
-            //var listaPrato2 = new List<EncomendasPratos>();
-            //listaPrato2.Add(new EncomendasPratos { PratoFK = id, Encomenda = encomenda });
-            //encomenda.ListaEncomendasPratos = listaPrato2;
-
             //ver se o prato já foi adicionado à encomenda
-            //EncomendasPratos result = new()
-            //EncomendasPratos result = _context.Find(encomenda.ListaEncomendasPratos.Where(t => t.PratoFK == id).FirstOrDefault());
-            var lista = encomenda.ListaEncomendasPratos;
-            var listaRegisto = lista.FirstOrDefault( e=> e.PratoFK == id);
-            
-            // se não foi
-            if (listaRegisto == null)
+            var registo = await _context.EncomendasPratos
+               .Where(s => s.PratoFK == id && s.EncomendaFK == encomenda.Id)
+               .FirstOrDefaultAsync();
+
+            if (registo == null)
             {
-                //var pratoAdd = new EncomendasPratos { Prato = prato, Encomenda = encomenda, Quantidade = 1 };
-                //encomenda.ListaEncomendasPratos.Add( pratoAdd);
-                encomenda.PrecoTotal = 0;
+                // se não foi, adicionar à encomenda
+                var pratoAdd = new EncomendasPratos { Prato = prato, Encomenda = encomenda, Quantidade = 1 };
+                encomenda.ListaEncomendasPratos.Add( pratoAdd);
+
                 // atualizar os dados na BD
                 _context.Entry(encomenda).State = EntityState.Modified;
-                //_context.Encomendas.Update(encomenda);
                 await _context.SaveChangesAsync();
                 //devolver caso de sucesso em Json
                 return Json(new { id = "1" });
             }
             //se já foi, ir buscar a quantidade e incrementar
-            var qnt = listaRegisto.Quantidade;
-            qnt++;
-            encomenda.ListaEncomendasPratos.Add(new EncomendasPratos { Prato = prato, Encomenda = encomenda, Quantidade = qnt });
+            var qnt = registo.Quantidade + 1;
+
+            //adicionar novamente com a quantidade incrementada
+            var pratoAdd2 = new EncomendasPratos { Prato = prato, Encomenda = encomenda, Quantidade = qnt };
+            encomenda.ListaEncomendasPratos.Add(pratoAdd2);
+
+            //remover o registo antigo
+            _context.Remove(registo);
 
             // atualizar os dados na BD
-            _context.Update(encomenda);
+            _context.Entry(encomenda).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             //devolver caso de sucesso em Json
             return Json(new { id = "1" });

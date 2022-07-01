@@ -30,7 +30,7 @@
                         </li>
                         @if(User.IsInRole("Cliente")){
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Encomendas" asp-action="Edit">Encomenda</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Encomendas" asp-action="RedirectToEdit">Encomenda</a>
                         </li>                      
                         }
                         @if(User.IsInRole("Admin")){

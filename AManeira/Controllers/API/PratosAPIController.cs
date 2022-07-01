@@ -85,6 +85,7 @@ namespace AManeira.Controllers.API
             }
 
             prato.Id = id;
+            prato.Preco = Convert.ToDecimal(prato.AuxPreco.Replace('.', ','));
 
 
             _context.Entry(prato).State = EntityState.Modified;
@@ -142,6 +143,7 @@ namespace AManeira.Controllers.API
             }
 
             prato.Foto = uploadFotoPrato.FileName;
+            prato.Preco = Convert.ToDecimal(prato.AuxPreco.Replace('.', ','));
 
             try { 
                 _context.Pratos.Add(prato);
