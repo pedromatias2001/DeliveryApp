@@ -31,21 +31,7 @@ namespace AManeira.Controllers
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Encomendas.Include(e => e.Cliente);
-            //ir buscar o cliente autenticado
-            var user = await _userManager.GetUserAsync(HttpContext.User);
-
-            //procurar na tabela dos clientes pelo utilizador autenticado
-            var cliente = await _context.Clientes
-               .Where(s => s.UserID == user.Id)
-               .FirstOrDefaultAsync();
-            if (cliente == null)
-            {
-                RedirectToAction("Index");
-            }
-
-            //enviar o ID do cliente para a view
-            ViewBag.Cliente = cliente.ID;
-            //return await Task.Run(() => View());
+            
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -134,7 +120,7 @@ namespace AManeira.Controllers
             }
 
             //calcular o preço total
-            var preco = await _context.EncomendasPratos.Include(e => e.Prato).SumAsync(e => e.Prato.Preco*e.Quantidade);
+            var preco = await _context.EncomendasPratos.Include(e => e.Prato).Where(e => e.Encomenda == encomenda).SumAsync(e => e.Prato.Preco*e.Quantidade);
             encomenda.AuxPrecoTotal = preco.ToString("0.00");
             _context.Entry(encomenda).State = EntityState.Modified;
             await _context.SaveChangesAsync();
@@ -151,6 +137,16 @@ namespace AManeira.Controllers
         {
             encomenda.PrecoTotal = Convert.ToDecimal(encomenda.AuxPrecoTotal.Replace('.', ','));
             encomenda.IsActive = false;
+
+            //ir buscar o utilizador autenticado
+            var user = _userManager.GetUserId(User);
+
+            //procurar na tabela dos clientes pelo utilizador autenticado
+            var cliente = await _context.Clientes
+               .Where(s => s.UserID == user)
+               .FirstOrDefaultAsync();
+            encomenda.Cliente = cliente;
+
             if (id != encomenda.Id)
             {
                 return RedirectToAction("Index");
@@ -160,7 +156,7 @@ namespace AManeira.Controllers
             {
                 try
                 {
-                    _context.Update(encomenda);
+                    _context.Entry(encomenda).State = EntityState.Modified;
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -174,7 +170,7 @@ namespace AManeira.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Pratos");
             }
             ViewData["ClienteFK"] = new SelectList(_context.Set<Clientes>(), "ID", "ID", encomenda.ClienteFK);
             return View(encomenda);

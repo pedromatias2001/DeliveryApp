@@ -23,11 +23,11 @@
         <div>@Html.DisplayFor(modelItem => item.Nome)</div>
         @if (!User.IsInRole("Cliente"))
         {
-            <div>@Html.DisplayFor(modelItem => item.Preco)$</div>
+            <div>@Html.DisplayFor(modelItem => item.Preco)€</div>
         }
         @if (User.IsInRole("Cliente"))
         {
-            <input type="button" class="botao" id="addDish" onclick="AjaxFormSubmit(@item.Id)" value="Adicionar à encomenda (+@Html.DisplayFor(modelItem => item.Preco)$)" />
+            <input type="button" class="botao" id="addDish" onclick="AjaxFormSubmit(@item.Id)" value="Adicionar à encomenda (+@Html.DisplayFor(modelItem => item.Preco)€)" />
         }
     </div>
 
