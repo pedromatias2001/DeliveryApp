@@ -46,6 +46,7 @@ namespace AManeira.Models
         /// <summary>
         /// quantidade disponível do prato
         /// </summary>
+        [Display(Name = "Stock")]
         public int NumStock { get; set; }
 
         /// <summary>

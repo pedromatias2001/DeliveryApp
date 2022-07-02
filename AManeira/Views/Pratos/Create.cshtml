@@ -1,12 +1,12 @@
 ﻿@model AManeira.Models.Pratos
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Novo prato";
 }
 
-<h1>Create</h1>
+<h1>Adicionar</h1>
 
-<h4>Pratos</h4>
+<h4>Prato</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -38,14 +38,14 @@
                 <span asp-validation-for="NumStock" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Adicionar" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Voltar à ementa</a>
 </div>
 
 @section Scripts {
