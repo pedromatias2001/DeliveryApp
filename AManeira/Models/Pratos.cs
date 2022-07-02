@@ -19,7 +19,6 @@ namespace AManeira.Models
         /// <summary>
         /// nome do prato
         /// </summary>
-        [Required]
         public string Nome { get; set; }
 
 
@@ -27,7 +26,6 @@ namespace AManeira.Models
         /// preço do prato
         /// </summary>
         [NotMapped]  // this anotation tells the EF that this attribute must not be represented on database
-        [Required]
         [RegularExpression("[0-9]{1,8}[,.]?[0-9]{0,2}", ErrorMessage = "Formato não aceitável")]
         [Display(Name = "Preço")]
         public string AuxPreco { get; set; }
@@ -36,13 +34,11 @@ namespace AManeira.Models
         /// <summary>
         /// foto associada ao prato
         /// </summary>
-        [Required]
         public string Foto { get; set; }
 
         /// <summary>
         /// descrição do prato
         /// </summary>
-        [Required]
         [Display(Name = "Descrição")]
         public string Descricao { get; set; }
 
@@ -50,7 +46,6 @@ namespace AManeira.Models
         /// <summary>
         /// quantidade disponível do prato
         /// </summary>
-        [Required]
         public int NumStock { get; set; }
 
         /// <summary>

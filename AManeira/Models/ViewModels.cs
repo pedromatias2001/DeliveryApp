@@ -1,7 +1,7 @@
 namespace AManeira.Models
 {   
     /// <summary>
-    /// Este viewmodel irá recolher os dados dos Animais que a API 
+    /// Este viewmodel irá recolher os dados dos Pratos que a API 
     /// irá apresentar na sua interface
     /// </summary>
     public class PratosViewModel
